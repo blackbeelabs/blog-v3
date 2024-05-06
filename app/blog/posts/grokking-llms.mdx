@@ -119,7 +119,7 @@ Your transformer model never sees text directly, instead it just sees tokens.
 
 ![Tokenization](/images/tokenization.png)
 
-We use algorithms such as Byte Pair Encoding and sentence piece and run them on a large corpus of text to choose a selection of tokens that we can use to break down text. The less tokens we can use to represent a specific prompt, the cheaper it is for inference. 
+We run tokenization algorithms such as Byte Pair Encoding and SentencePiece on a large corpus of text to break down text into its constituent tokens (that aren't necessarily words!). The less tokens we need to represent a line of text, the cheaper its inference cost is. (Tokenization operates on both the prompts, and the outputs.)
 
 It might also mean that we get better performance.
 
@@ -135,7 +135,7 @@ On a high level, this is how inference might work with a transformer
 ![Transformer Flow](/images/transformer-flow.png)
 
 
-It has a known mapping of tokens ( think subwords eg. `The `, ` France`) and each token has a unique id. It then converts the text you pass in to the token ids and outputs a new vector.
+It has a known mapping of tokens ( think subwords eg. `The `, ` Capital`) and each token has a unique id. It then converts the text you pass in to the token ids and outputs a new vector.
 
 This vector has the same size as the mapping it has and corresponds to the probability of a token being the next token in the sequence.
 
@@ -177,7 +177,7 @@ sample embeddings => {
 ```
 
 
-Notice here that our token would have the same vector irregardless of position. If it was `Shake an Avacado` vs `an Avacado Shake`, the Shake here refer to two very different things even if it's the same word. 
+Notice here that our token would have the same vector regardless of position. If it was `Shake` `an` `Avacado` vs `an` `Avacado` `Shake`, the `Shake` here refer to two very different things even if it's the same word. 
 
 Therefore, we add what's called a positional encoding. This is just a value that we compute for each number in each vector. It's the same regardless of the token, and only depends on the position of the token. More importantly, the model uses this value with a lot of training to be able to understand the position of the token.
 
@@ -235,9 +235,9 @@ We multiply our generated Query and Key matrix together and get a weightage for 
 ]
 ```
 
-Next, we perform a matrix multiplication of this matrix with the value matrix. This operation aggregates the values for each token across each row, weighted according to the defined percentages in each row. Once we've done so, we feed it through a normal linear network that further enriches this vector of numbers.
+Next, we perform a matrix multiplication of this matrix with the value matrix. This operation aggregates the values for each token across each row, weighted according to the defined percentages in each row. Once we've done so, we feed it through a normal feedforward network that further enriches this vector of numbers.
 
-The way I like to think about it is that the attention operation combines semantic meaning of different tokens at each position while the linear layer helps us to make sense of this new information. We then do this multiple times and the final result helps generate the prediction.
+The way I like to think about it is that the attention operation combines semantic meaning of different tokens at each position while the feedforward layer helps us to make sense of this new information. We then do this multiple times and the final result helps generate the prediction.
 
 
 ## Training a Model
